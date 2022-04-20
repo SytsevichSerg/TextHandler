@@ -7,7 +7,7 @@ public interface LexicalComponent {
     
     boolean  add(LexicalComponent component);
     boolean  remove(LexicalComponent component);
-    public LexicalUnit geLexicalUnit();
+    public LexicalLevel getLexicalLevel();
     String toString();
     List<LexicalComponent> getComponentList(); 
 }

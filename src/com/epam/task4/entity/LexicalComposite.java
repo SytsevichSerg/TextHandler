@@ -6,11 +6,15 @@ import java.util.List;
 
 public class LexicalComposite implements LexicalComponent{
     
-    private final LexicalUnit unit;
+    private LexicalLevel level;
     private List<LexicalComponent> componentList;
     
-    public LexicalComposite(LexicalUnit unit){
-        this.unit = unit;
+    public LexicalComposite(){
+        componentList = new ArrayList<>();
+    }
+    
+    public LexicalComposite(LexicalLevel level){
+        this.level = level;
         componentList = new ArrayList<>();
     }
     
@@ -25,8 +29,8 @@ public class LexicalComposite implements LexicalComponent{
     }
 
     @Override
-    public LexicalUnit geLexicalUnit() {
-        return unit;
+    public LexicalLevel getLexicalLevel() {
+        return level;
     }
 
     @Override
@@ -34,12 +38,15 @@ public class LexicalComposite implements LexicalComponent{
         return componentList;
     }
     
+    public void setLevel(LexicalLevel level) {
+        this.level = level;
+    }
     
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         String delimiter = Delimiter.EMPTY.getDelimiter();
-        switch (unit) {
+        switch (level) {
             case TEXT:
                 delimiter = Delimiter.LF.getDelimiter();
                 break;
@@ -55,5 +62,4 @@ public class LexicalComposite implements LexicalComponent{
         }
         return stringBuilder.toString();
     }
-    
 }

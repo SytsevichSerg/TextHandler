@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<Configuration status = "WARN">
+		<Properties>
+			<property name="pattern_0">
+				%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{5} - %msg%n
+			</property>
+		</Properties>
+		<Appenders>
+			<RollingFile name="File" filename="logs/text.log" append="true"
+						 filePattern ="logs/${date:yyyy-MM-dd}/%d{yyyy-MM-dd_HH_mm}_%i.log">
+				<PatternLayout pattern="${pattern_0}"/>
+				<Policies>
+					<TimeBasedTriggeringPolicy/>
+					<SizeBasedTriggeringPolicy size ="25 KB"/>
+				</Policies>
+				<DefaultRolloverStrategy max="10"/>
+			</RollingFile>
+			<Console name="Сonsole" target="SYSTEM_OUT">
+				<PatternLayout pattern="${ABSOLUTE} %-5level %logger{1} -%msg%n"/>
+			</Console>
+		</Appenders>
+		<Loggers>
+			<Root level ="debug">
+				<Appender-ref ref ="TxtFile" level = "debug" />
+				<Appender-ref ref ="Сonsole" level = "debug" />
+			</Root>
+		</Loggers>
+	</Configuration>
