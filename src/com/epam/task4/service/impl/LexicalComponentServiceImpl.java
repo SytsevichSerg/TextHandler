@@ -30,14 +30,13 @@ public class LexicalComponentServiceImpl implements LexicalComponentService{
     
     @Override
     public boolean sortParagraphs(LexicalComponent component) {
-        //LOG.info("sortParagraphs: ПОСМОТРЕТЬ ИНТЕРПРЕТОР!!!");
         boolean ret = true; 
         if(component.getLexicalLevel() == LexicalLevel.TEXT) {
             component.getComponentList().sort(Comparator.comparingInt(c -> c.getComponentList().size()));
         } else {
             ret = false;
         }
-        LOG.info(component.toString() + "sortParagraphs: ПОСМОТРЕТЬ ИНТЕРПРЕТОР!!!");
+        LOG.info(component.toString() + "sortParagraphs");
         return ret;
     }
 
@@ -56,6 +55,7 @@ public class LexicalComponentServiceImpl implements LexicalComponentService{
                    iterateSentences(sentence);
                }break;
         }
+        LOG.info(component.toString() + "findSentences");
         return sentenceList;
     }
 
@@ -65,20 +65,23 @@ public class LexicalComponentServiceImpl implements LexicalComponentService{
         switch (component.getLexicalLevel()) {
             case TEXT: {
                 for (LexicalComponent paragraph : component.getComponentList()){
-                    deleteSentence(paragraph, component, wordsCount);
+                    if(deleteSentence(paragraph, component, wordsCount)>0)
+                        ret = true;
                 }
             }break;
             
             case PARAGRAPH: {
-                ret = deleteSentence(component, component, wordsCount);
+                if(deleteSentence(component, component, wordsCount)>0)
+                    ret = true;
             }break;
         }
+        LOG.info(component.toString() + "deleteSentences: words count less that : " + wordsCount + " result: " +ret );
         return ret;
     }
 
     @Override
     public Map<String, Integer> findAndCountAlikeWords(LexicalComponent component) {
-        Map<String, Integer> wordsAlike = new HashMap<>();
+
         switch (component.getLexicalLevel()) {
             case TEXT: {
                 for (LexicalComponent paragraph : component.getComponentList()){
@@ -88,8 +91,8 @@ public class LexicalComponentServiceImpl implements LexicalComponentService{
                 }
             }
         }
-        LOG.info(wordsMap.toString() + "findAndCountAlikeWords: ПОСМОТРЕТЬ ИНТЕРПРЕТОР!!!");
-        return wordsAlike;
+        LOG.info(wordsMap.toString() + "findAndCountAlikeWords");
+        return wordsMap;
     }
 
     @Override
@@ -114,7 +117,7 @@ public class LexicalComponentServiceImpl implements LexicalComponentService{
         
         lettersMap.put("Vowel", vowel);
         lettersMap.put("Consonant", consonant);
-        LOG.info(lettersMap.toString() + "countVowelConsonant: ПОСМОТРЕТЬ ИНТЕРПРЕТОР!!!");
+        LOG.info(lettersMap.toString() + "countVowelConsonant");
         return lettersMap;
     }
     
@@ -141,18 +144,19 @@ public class LexicalComponentServiceImpl implements LexicalComponentService{
         return resize;
     }
     
-    private boolean deleteSentence(LexicalComponent paragraph, LexicalComponent component, int count) {
+    private int deleteSentence(LexicalComponent paragraph, LexicalComponent component, int count) {
         
-        boolean ret = false;
         for (LexicalComponent sentence : paragraph.getComponentList()) {
             if(sentence.getComponentList().size() < count) {
                 sentencesToRemove.add(sentence);
             }
         }
+        
         for (LexicalComponent sentence : sentencesToRemove){
-           ret = component.remove(sentence);
+           component.remove(sentence);
         }
-        return ret;
+       
+        return sentencesToRemove.size();
     }
     
     private void findWords(LexicalComponent sentence) {
